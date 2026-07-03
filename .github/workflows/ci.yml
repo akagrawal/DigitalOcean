@@ -23,4 +23,7 @@ jobs:
         run: dotnet restore IngestionApi.sln
 
       - name: Build
-        run: dotnet build IngestionApi.sln --configuration Release --no-restore
+        run: dotnet build Ingestion.Api.Tests/Ingestion.Api.Tests.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Ingestion.Api.Tests/Ingestion.Api.Tests.csproj --configuration Release --no-build
