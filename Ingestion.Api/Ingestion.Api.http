@@ -1,0 +1,54 @@
+@Ingestion.Api_HostAddress = http://localhost:5001
+@CorrelationId = {{$guid}}
+
+### Health - overall
+GET {{Ingestion.Api_HostAddress}}/health
+Accept: application/json
+
+### Health - liveness
+GET {{Ingestion.Api_HostAddress}}/health/live
+Accept: application/json
+
+### Health - readiness
+GET {{Ingestion.Api_HostAddress}}/health/ready
+Accept: application/json
+
+### Ingest single event
+POST {{Ingestion.Api_HostAddress}}/api/v1/ingest/events
+Content-Type: application/json
+X-Correlation-Id: {{CorrelationId}}
+
+{
+  "eventType": "order.created",
+  "source": "checkout-service",
+  "occurredAt": "2026-07-03T14:30:00Z",
+  "payload": {
+    "orderId": "ord_123",
+    "amount": 49.99
+  }
+}
+
+### Ingest batch
+POST {{Ingestion.Api_HostAddress}}/api/v1/ingest/events/batch
+Content-Type: application/json
+X-Correlation-Id: {{CorrelationId}}
+
+{
+  "events": [
+    {
+      "eventType": "inventory.updated",
+      "source": "warehouse-service",
+      "payload": { "sku": "SKU-001", "quantity": 42 }
+    },
+    {
+      "eventType": "inventory.updated",
+      "source": "warehouse-service",
+      "payload": { "sku": "SKU-002", "quantity": 7 }
+    }
+  ]
+}
+
+### Get event status
+GET {{Ingestion.Api_HostAddress}}/api/v1/ingest/events/00000000-0000-0000-0000-000000000001
+Accept: application/json
+X-Correlation-Id: {{CorrelationId}}
